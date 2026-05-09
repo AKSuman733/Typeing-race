@@ -50,6 +50,8 @@ const countdownAudio = useRef(new Audio(countdownSound));
 
 const victoryAudio = useRef(new Audio(victorySound));
 
+const MAX_HP = 200;
+
   // SOCKET EVENTS
   useEffect(() => {
 
@@ -115,7 +117,7 @@ victoryAudio.current.load();
     
       setTimeout(() => {
         setShake(false);
-      }, 300);
+      }, 200);
     
       setRedHP(data.redHP);
     
@@ -288,9 +290,7 @@ victoryAudio.current.play();
             </p>
           </div>
 
-          <div className="text-white">
-  {isHost ? "I AM HOST" : "NOT HOST"}
-</div>
+          
 
           <div className="bg-zinc-900 px-5 py-3 rounded-2xl border border-zinc-800">
             Team:
@@ -328,7 +328,7 @@ victoryAudio.current.play();
               <motion.div
   className="h-full bg-red-500" 
   animate={{
-    width: `${redHP}%`,
+    width: `${(redHP / MAX_HP) * 100}%`,
     opacity: shake ? [1, 0.5, 1] : 1,
   }}
   transition={{
@@ -356,7 +356,7 @@ victoryAudio.current.play();
               <motion.div
   className="h-full bg-blue-500"
   animate={{
-    width: `${blueHP}%`,
+    width: `${(blueHP / MAX_HP) * 100}%`,
     opacity: shake ? [1, 0.5, 1] : 1,
   }}
   transition={{
