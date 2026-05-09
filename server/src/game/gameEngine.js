@@ -19,40 +19,34 @@ function getRandomWord() {
 
 // GAME LOOP
 function startGameLoop(io, roomId) {
-
   const room = getRoom(roomId);
-
   if (!room) return;
 
-  // CLEAR OLD LOOP
+  // STOP OLD LOOP
   if (room.gameState.gameLoop) {
-
-    clearInterval(room.gameState.gameLoop);
-
+    clearTimeout(room.gameState.gameLoop);
   }
 
-  room.gameState.gameLoop = setInterval(() => {
+  room.gameState.status = "playing";
 
-    if (room.gameState.status !== "playing") {
-
-      clearInterval(room.gameState.gameLoop);
-
-      return;
-
-    }
+  const nextWord = () => {
+    const room = getRoom(roomId);
+    if (!room || room.gameState.status !== "playing") return;
 
     const word = getRandomWord();
 
     room.gameState.currentWord = word;
-
     room.gameState.answeredPlayers = [];
-
     room.gameState.roundWinner = null;
 
     io.to(roomId).emit("new_word", word);
 
-  }, WORD_INTERVAL);
+    room.gameState.gameLoop = setTimeout(() => {
+      nextWord();
+    }, WORD_INTERVAL);
+  };
 
+  nextWord();
 }
 
 // START COUNTDOWN
