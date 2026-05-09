@@ -26,9 +26,9 @@ function App() {
 
   const [input, setInput] = useState("");
 
-  const [redHP, setRedHP] = useState(100);
+  const [redHP, setRedHP] = useState(200);
 
-  const [blueHP, setBlueHP] = useState(100);
+  const [blueHP, setBlueHP] = useState(200);
 
   const [winner, setWinner] = useState("");
 
@@ -52,7 +52,7 @@ const victoryAudio = useRef(new Audio(victorySound));
 
   // SOCKET EVENTS
   useEffect(() => {
-    
+
     attackAudio.current.load();
 wrongAudio.current.load();
 countdownAudio.current.load();
