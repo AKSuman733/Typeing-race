@@ -214,7 +214,8 @@ if (player.team === "red") {
       blueHP: room.gameState.blueHP,
     });
 
-    io.to(roomId).emit("wrong_word", {
+    // ONLY WRONG PLAYER GETS SHAKE
+    io.to(socketId).emit("wrong_word", {
       player: player.username,
       word: typedWord,
     });

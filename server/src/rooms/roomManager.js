@@ -14,9 +14,9 @@ function createRoom(roomId) {
 
     gameState: {
 
-      redHP: 100,
+      redHP: 200,
 
-      blueHP: 100,
+      blueHP: 200,
 
       currentWord: "",
 

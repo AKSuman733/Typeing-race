@@ -140,7 +140,7 @@ AKS is on 5 streak!
 Each team starts with:
 
 ```
-100 HP
+200 HP
 ```
 
 The first team reaching:
