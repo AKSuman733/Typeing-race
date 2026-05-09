@@ -14,7 +14,12 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: [
+      "http://localhost:5174",
+      "https://typeing-race.vercel.app",
+    ],
+    methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
