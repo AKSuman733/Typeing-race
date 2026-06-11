@@ -5,3 +5,32 @@ body {
   padding: 0;
   box-sizing: border-box;
 }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-8px); }
+  80% { transform: translateX(8px); }
+}
+
+.animate-shake {
+  animation: shake 0.25s ease-in-out;
+}
+
+.hp-bar {
+  transition: width 0.3s ease-out;
+  will-change: width;
+}
+
+@media (max-width: 640px) {
+  .game-input-sticky {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.75rem;
+    background: linear-gradient(to top, #000 75%, transparent);
+    z-index: 20;
+  }
+}

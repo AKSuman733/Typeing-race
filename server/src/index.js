@@ -7,17 +7,18 @@ require("dotenv").config();
 const socketHandler = require("./socket/socketHandler");
 
 const app = express();
-
 app.use(cors());
+
+const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5174" || "https://typeing-race.vercel.app")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: [
-      "http://localhost:5174",
-      "https://typeing-race.vercel.app",
-    ],
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -25,6 +26,10 @@ const io = new Server(server, {
 
 app.get("/", (req, res) => {
   res.send("Last Typist Standing Server Running");
+});
+
+app.get("/health", (req, res) => {
+  res.json({ status: "ok", uptime: process.uptime() });
 });
 
 socketHandler(io);

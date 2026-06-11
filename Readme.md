@@ -206,7 +206,13 @@ npm run dev
 Server runs on:
 
 ```
-http://localhost:5000
+http://localhost:3000
+```
+
+Health check:
+
+```
+http://localhost:3000/health
 ```
 
 ---
@@ -216,7 +222,7 @@ http://localhost:5000
 ## Go to client folder
 
 ```
-cd client
+cd client/game
 ```
 
 ## Install dependencies
@@ -234,7 +240,13 @@ npm run dev
 Frontend runs on:
 
 ```
-http://localhost:5173
+http://localhost:5174
+```
+
+For local development, use `client/game/.env.local`:
+
+```
+VITE_WS_URL=http://localhost:3000
 ```
 
 ---
@@ -278,11 +290,19 @@ victory.mp3
 
 ---
 
+# ✅ Recent Features
+
+* Ready system before match start
+* Reconnection after refresh (60s grace period)
+* WPM and accuracy stats per player
+* Scaled team HP for large lobbies
+* Input validation and submit rate limiting
+* Split React components and mobile-friendly layout
+
 # 🚀 Future Improvements
 
 Planned features:
 
-* Ready system
 * Global leaderboard
 * Match history
 * Database support
