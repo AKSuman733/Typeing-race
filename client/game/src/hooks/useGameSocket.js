@@ -1,6 +1,10 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import socket from "../socket";
-import { EPHEMERAL_MS, INITIAL_GAME_STATE, SESSION_KEY } from "../config/gameConfig";
+import {
+  EPHEMERAL_MS,
+  INITIAL_GAME_STATE,
+  SESSION_KEY,
+} from "../config/gameConfig";
 
 import attackSound from "../assets/sounds/attack.mp3";
 import wrongSound from "../assets/sounds/wrong.mp3";
@@ -44,12 +48,18 @@ export function useGameSocket() {
   const [flash, setFlash] = useState({ roundWinner: "", comboMessage: "" });
   const [socketId, setSocketId] = useState(socket.id || "");
 
-  const previousCountdown = useRef(null);
+  // Timers and Values tracked safely across renders
+  const lastPlayedCountdownRef = useRef(null);
+  const lastPlayedTimeRef = useRef(0); // Protects against rapid audio cloning
+
   const shakeTimer = useRef(null);
   const flashTimer = useRef(null);
   const roomIdRef = useRef(saved?.roomId || "");
   const usernameRef = useRef(saved?.username || "");
   const attemptedReconnect = useRef(false);
+
+  // Keep latest state/callbacks in refs so useEffect never has to re-bind listeners
+  const callbacksRef = useRef({});
 
   const primeAudio = useCallback(() => {
     prepareAudio(SOUNDS).catch(() => {});
@@ -81,37 +91,55 @@ export function useGameSocket() {
   }, []);
 
   const handleCountdownChange = useCallback((countdown) => {
-    if (countdown === null || countdown === undefined) {
-      previousCountdown.current = null;
-      return;
-    }
+  // If countdown is cleared (null/undefined/0), reset our tracker and stop
+  if (countdown === null || countdown === undefined || countdown === 0) {
+    lastPlayedCountdownRef.current = countdown;
+    return;
+  }
 
-    if (countdown === previousCountdown.current) return;
+  const previous = lastPlayedCountdownRef.current;
 
-    previousCountdown.current = countdown;
+  // CRITICAL CONDITION: 
+  // Only play if we don't have a previous record, OR if the new countdown 
+  // is higher/equal to the previous one (signaling a brand new countdown sequence started).
+  if (previous === null || previous === undefined || countdown >= previous) {
     playSound("countdown");
+  }
+
+  // Always update the ref so we track the ticking numbers (e.g., 3 -> 2 -> 1)
+  // This ensures that when it hits 2 and 1, the condition above evaluates to FALSE,
+  // allowing your continuous audio track to keep playing completely uninterrupted.
+  lastPlayedCountdownRef.current = countdown;
   }, []);
+  
 
-  const applyState = useCallback(
-    (state) => {
-      if ("countdown" in state) {
-        handleCountdownChange(state.countdown);
-      }
+  // Update our stable execution references every render loop safely
+  useEffect(() => {
+    callbacksRef.current = {
+      handleCountdownChange,
+      showFlash,
+      playAttackFeedback,
+      playWrongFeedback,
+      playVictoryFeedback,
+    };
+  });
 
-      showFlash(state.roundWinner, state.comboMessage);
-      setGameState((prev) => ({ ...prev, ...state }));
-    },
-    [showFlash, handleCountdownChange]
-  );
-
+  // CLEAN EFFECT: Runs exactly ONCE on mount and teardown on unmount.
+  // No more constant listener attachment/detachment flickering.
   useEffect(() => {
     prepareAudio(SOUNDS).catch(() => {});
 
-    const onGameState = (state) => applyState(state);
+    const onGameState = (state) => {
+      if ("countdown" in state) {
+        callbacksRef.current.handleCountdownChange(state.countdown);
+      }
+      callbacksRef.current.showFlash(state.roundWinner, state.comboMessage);
+      setGameState((prev) => ({ ...prev, ...state }));
+    };
 
     const onGameDelta = (patch) => {
       if ("countdown" in patch) {
-        handleCountdownChange(patch.countdown);
+        callbacksRef.current.handleCountdownChange(patch.countdown);
       }
       setGameState((prev) => ({ ...prev, ...patch }));
     };
@@ -119,13 +147,13 @@ export function useGameSocket() {
     const onGameUpdate = (event) => {
       switch (event.type) {
         case "correct":
-          playAttackFeedback();
+          callbacksRef.current.playAttackFeedback();
           break;
         case "wrong":
-          playWrongFeedback();
+          callbacksRef.current.playWrongFeedback();
           break;
         case "victory":
-          playVictoryFeedback();
+          callbacksRef.current.playVictoryFeedback();
           break;
         default:
           break;
@@ -140,7 +168,6 @@ export function useGameSocket() {
 
     const onConnect = () => {
       setSocketId(socket.id);
-
       const session = readSession();
       if (!session || attemptedReconnect.current) return;
 
@@ -172,19 +199,11 @@ export function useGameSocket() {
       clearTimeout(shakeTimer.current);
       clearTimeout(flashTimer.current);
     };
-  }, [
-    applyState,
-    handleCountdownChange,
-    playWrongFeedback,
-    playAttackFeedback,
-    playVictoryFeedback,
-  ]);
+  }, []); // Empty dependency array ensures total listener stability
 
   const handleJoin = () => {
     if (!username.trim() || !roomId.trim()) return;
-
     primeAudio();
-
     setJoinError("");
     usernameRef.current = username.trim();
     roomIdRef.current = roomId.trim();
