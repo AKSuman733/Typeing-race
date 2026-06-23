@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProHack Controls</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo-area">
+        <div class="logo-glow"></div>
+        <div class="logo-symbol">⚡</div>
+        <h1 class="logo-title">PRO<span>HACK</span></h1>
+      </div>
+      <div class="badge">V1.0</div>
+    </header>
+
+    <!-- Main Toggle Card -->
+    <div class="card status-card">
+      <div class="status-info">
+        <span class="status-label">AUTO-TYPER RIG</span>
+        <h2 id="status-display" class="status-value inactive">INACTIVE</h2>
+      </div>
+      <label class="switch-container">
+        <input type="checkbox" id="hack-toggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- Quick Control Shortcut Info -->
+    <div class="shortcut-tip">
+      <span class="key-combo">Ctrl</span> + <span class="key-combo">Shift</span> + <span class="key-combo">H</span> to toggle on the fly
+    </div>
+
+    <!-- Section Title -->
+    <div class="section-header">
+      <h3>TYPING VELOCITY</h3>
+    </div>
+
+    <!-- Speed Selector Bento Grid -->
+    <div class="speed-grid">
+      <button class="speed-card active" data-speed="instant">
+        <div class="speed-icon">⚡</div>
+        <div class="speed-meta">
+          <span class="speed-name">Instant</span>
+          <span class="speed-desc">0ms Auto Win</span>
+        </div>
+      </button>
+
+      <button class="speed-card" data-speed="superfast">
+        <div class="speed-icon">🚀</div>
+        <div class="speed-meta">
+          <span class="speed-name">Super Fast</span>
+          <span class="speed-desc">~300 WPM</span>
+        </div>
+      </button>
+
+      <button class="speed-card" data-speed="fast">
+        <div class="speed-icon">🔥</div>
+        <div class="speed-meta">
+          <span class="speed-name">Fast</span>
+          <span class="speed-desc">~160 WPM</span>
+        </div>
+      </button>
+
+      <button class="speed-card" data-speed="human">
+        <div class="speed-icon">🛡️</div>
+        <div class="speed-meta">
+          <span class="speed-name">Human-like</span>
+          <span class="speed-desc">Real typos & edits</span>
+        </div>
+      </button>
+    </div>
+
+    <!-- Onset Delay Control -->
+    <div class="card delay-card">
+      <div class="delay-header">
+        <span class="delay-label">ONSET DELAY</span>
+        <span id="delay-val" class="delay-display">0ms</span>
+      </div>
+      <input type="range" id="delay-slider" class="range-slider" min="0" max="1000" step="50" value="0">
+      <p class="delay-desc">Adds a wait timer before typing to bypass client-side speed limits.</p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <span>RIG STATE: <span id="rig-status" class="inactive-dot">● DISCONNECTED</span></span>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

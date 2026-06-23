@@ -1,0 +1,93 @@
+/* ProHack floating HUD styles */
+#prohack-hud {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2147483647; /* Ensure it stays above everything */
+  padding: 10px 18px;
+  background: rgba(10, 10, 12, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  color: #f4f4f5;
+  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  pointer-events: auto;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+  opacity: 1;
+}
+
+#prohack-hud.inactive {
+  border-color: rgba(239, 68, 68, 0.2);
+  box-shadow: 0 4px 20px 0 rgba(239, 68, 68, 0.08), 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+#prohack-hud.active {
+  border-color: rgba(0, 255, 136, 0.25);
+  box-shadow: 0 4px 25px 0 rgba(0, 255, 136, 0.15), 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+#prohack-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+#prohack-hud.inactive #prohack-indicator {
+  background-color: #ef4444;
+  box-shadow: 0 0 10px #ef4444;
+}
+
+#prohack-hud.active #prohack-indicator {
+  background-color: #00ff88;
+  box-shadow: 0 0 14px #00ff88;
+  animation: prohack-pulse 1.5s infinite alternate;
+}
+
+#prohack-title {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+#prohack-status {
+  font-size: 13px;
+}
+
+#prohack-hud.inactive #prohack-status {
+  color: #ef4444;
+}
+
+#prohack-hud.active #prohack-status {
+  color: #00ff88;
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
+}
+
+#prohack-details {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 10px;
+}
+
+@keyframes prohack-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 1;
+    box-shadow: 0 0 16px #00ff88, 0 0 8px #00ff88;
+  }
+}
